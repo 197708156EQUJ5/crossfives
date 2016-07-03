@@ -126,6 +126,7 @@ public class KakurasuView extends JFrame
         clearButton.addActionListener(controller);
         clearButton.setActionCommand("Clear");
         undoButton = new JButton("Undo");
+        undoButton.setEnabled(false);
         undoButton.addActionListener(controller);
         undoButton.setActionCommand("Undo");
         pauseButton = new JButton("Pause");
@@ -394,7 +395,6 @@ public class KakurasuView extends JFrame
         }
         else
         {
-
             text = "Start";
             timer.stop();
             pausedTimer.start();
@@ -406,5 +406,10 @@ public class KakurasuView extends JFrame
     public void setLevel(BoardLevelType boardLevelType)
     {
         levelLabel.setText(boardLevelType.getLevel());
+    }
+
+    public void setUndoButtonEnabled(boolean isEnable)
+    {
+        undoButton.setEnabled(isEnable);
     }
 }

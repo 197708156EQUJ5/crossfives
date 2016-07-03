@@ -35,6 +35,7 @@ public class KakurasuController implements ActionListener
         if (source instanceof JToggleButton)
         {
             String actionCommand = e.getActionCommand();
+            view.setUndoButtonEnabled(true);
             undoStack.push(actionCommand);
             move(actionCommand);
             if (this.board.isWin())
@@ -51,6 +52,7 @@ public class KakurasuController implements ActionListener
                 System.exit(0);
                 break;
             case "New":
+                undoStack.clear();
                 switch (boardLevelType)
                 {
                 case EASY:
@@ -111,11 +113,15 @@ public class KakurasuController implements ActionListener
                 view.clearGame();
                 break;
             case "Undo":
-                if(!undoStack.isEmpty())
+                if (!undoStack.isEmpty())
                 {
                     String toggleName = undoStack.pop();
                     move(toggleName);
                     view.flipToggle(toggleName);
+                }
+                if (undoStack.isEmpty())
+                {
+                    view.setUndoButtonEnabled(false);
                 }
             default:
                 break;
