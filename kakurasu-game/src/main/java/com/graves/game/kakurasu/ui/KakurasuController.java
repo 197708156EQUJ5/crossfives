@@ -130,6 +130,9 @@ public class KakurasuController implements ActionListener
         }
     }
 
+    /**
+     * @param actionCommand
+     */
     private void move(String actionCommand)
     {
         String[] split = actionCommand.split(",");
