@@ -274,6 +274,7 @@ public class KakurasuView extends JFrame
 
     public void newGame(Board board)
     {
+        offset = 0;
         if (timer != null && timer.isRunning())
         {
             timer.stop();
