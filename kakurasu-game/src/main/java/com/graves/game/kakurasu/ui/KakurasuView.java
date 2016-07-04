@@ -64,6 +64,7 @@ public class KakurasuView extends JFrame
     private boolean isPaused;
     private int offset;
     private Timer pausedTimer;
+    private JMenuItem addUserMenuItem;
 
     public KakurasuView()
     {
@@ -83,6 +84,7 @@ public class KakurasuView extends JFrame
         newMenuItem.setActionCommand("New");
         newMenuItem.addActionListener(controller);
         fileMenu.add(newMenuItem);
+        addUserMenuItem = new JMenuItem("New User");
         fileMenu.addSeparator();
         exitMenuItem = new JMenuItem("Exit");
         exitMenuItem.setActionCommand("Exit");
