@@ -2,17 +2,24 @@ package com.graves.game.kakurasu.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Stack;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 
 import com.graves.game.kakurasu.lib.Board;
 import com.graves.game.kakurasu.lib.BoardInitializer;
 import com.graves.game.kakurasu.lib.BoardLevelType;
+import com.graves.game.kakurasu.lib.database.KakurasuDataStore;
+import com.graves.game.kakurasu.lib.database.PasswordEncryptionService;
+import com.graves.game.kakurasu.lib.database.User;
 
 public class KakurasuController implements ActionListener
 {
@@ -74,10 +81,53 @@ public class KakurasuController implements ActionListener
                 Object boardIdx = JOptionPane.showInputDialog(view, "Board Index?",
                         "Select New Board", JOptionPane.INFORMATION_MESSAGE, new ImageIcon(), null,
                         this.board.getBoardIndex());
-                int boardIndex = Integer.parseInt(boardIdx.toString()) - 1;
-                int index = BoardInitializer.getIndex(boardIndex);
-                this.board.initialize(index, boardIndex);
-                this.view.newGame(this.board);
+                if (boardIdx != null)
+                {
+                    int boardIndex = Integer.parseInt(boardIdx.toString()) - 1;
+                    int index = BoardInitializer.getIndex(boardIndex);
+                    this.board.initialize(index, boardIndex);
+                    this.view.newGame(this.board);
+                }
+                break;
+            case "Add User":
+                JTextField username = new JTextField();
+                JTextField password = new JPasswordField();
+                Object[] message = { "Username:", username, "Password:", password };
+
+                int option = JOptionPane.showConfirmDialog(view, message, "Add User",
+                        JOptionPane.OK_CANCEL_OPTION);
+                if (option == JOptionPane.OK_OPTION)
+                {
+                    KakurasuDataStore.addUser(username.getText(), password.getText());
+                }
+                break;
+            case "Login":
+                JTextField loginUsername = new JTextField();
+                JTextField loginPassword = new JPasswordField();
+                Object[] loginMessage = { "Username:", loginUsername, "Password:", loginPassword };
+
+                int loginOption = JOptionPane.showConfirmDialog(view, loginMessage, "Login",
+                        JOptionPane.OK_CANCEL_OPTION);
+                if (loginOption == JOptionPane.OK_OPTION)
+                {
+                    User user = KakurasuDataStore.getUser(loginUsername.getText());
+                    try
+                    {
+                        if (PasswordEncryptionService.authenticate(loginPassword.getText(),
+                                user.getEncryptedPassword(), user.getSalt()))
+                        {
+                            System.out.println("Login successful");
+                        }
+                    }
+                    catch (NoSuchAlgorithmException | InvalidKeySpecException e1)
+                    {
+                        System.out.println("login failed");
+                    }
+                }
+                else
+                {
+                    System.out.println("Login canceled");
+                }
                 break;
             case "Easy":
                 boardLevelType = BoardLevelType.EASY;

@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import javax.swing.UIManager;
 
+import com.graves.game.kakurasu.lib.database.KakurasuDataStore;
 import com.graves.game.kakurasu.ui.KakurasuView;
 
 public class Kakurasu
@@ -11,6 +12,7 @@ public class Kakurasu
     public static void main(String[] args)
     {
         UIManager.put("ToggleButton.select", Color.BLUE);
+        KakurasuDataStore.createdDatabase();
         new KakurasuView();
     }
 }

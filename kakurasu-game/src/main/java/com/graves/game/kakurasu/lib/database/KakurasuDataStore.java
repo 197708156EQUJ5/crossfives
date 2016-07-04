@@ -3,6 +3,7 @@ package com.graves.game.kakurasu.lib.database;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -36,15 +37,10 @@ public class KakurasuDataStore
         userTable = sb.toString();
     }
 
-    private boolean isDatabaseCreated = false;
-    private Connection conn = null;
+    private static Connection conn = null;
 
-    public void createdDatabase()
+    public static void createdDatabase()
     {
-        if (isDatabaseCreated)
-        {
-            return;
-        }
 
         try
         {
@@ -52,20 +48,23 @@ public class KakurasuDataStore
             DriverManager.registerDriver(derbyEmbeddedDriver);
             conn = DriverManager.getConnection(DATABASE_URL, "karkurasu", "karkurasu1234");
             conn.setAutoCommit(false);
+            DatabaseMetaData dbm = conn.getMetaData();
+            ResultSet tables = dbm.getTables(null, null, "test", null);
+            if (!tables.next())
+            {
+                Statement stmt = conn.createStatement();
+                stmt.execute(userTable);
+                conn.commit();
+            }
 
-            Statement stmt = conn.createStatement();
-            stmt.execute(userTable);
-
-            conn.commit();
         }
         catch (SQLException e)
         {
             e.printStackTrace();
         }
-        isDatabaseCreated = true;
     }
 
-    public User getUser(String userName)
+    public static User getUser(String userName)
     {
         User user = null;
         try
@@ -87,7 +86,7 @@ public class KakurasuDataStore
         return user;
     }
 
-    public boolean addUser(String userName, String password)
+    public static boolean addUser(String userName, String password)
     {
         try
         {
@@ -119,7 +118,7 @@ public class KakurasuDataStore
         return true;
     }
 
-    private String createSelectStatement(String tableName, String... columns)
+    private static String createSelectStatement(String tableName, String... columns)
     {
         StringBuilder sb = new StringBuilder();
         sb.append("select ");
@@ -132,7 +131,7 @@ public class KakurasuDataStore
         return sb.toString();
     }
 
-    private String createInsertStatement(String tableName, String... columns)
+    private static String createInsertStatement(String tableName, String... columns)
     {
         StringBuilder sb = new StringBuilder();
         sb.append("insert into " + tableName + "(");
@@ -153,7 +152,7 @@ public class KakurasuDataStore
     /**
      * Unit testing purposes
      */
-    void dropTables()
+    static void dropTables()
     {
         try
         {

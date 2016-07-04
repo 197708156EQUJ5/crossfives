@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -65,6 +66,7 @@ public class KakurasuView extends JFrame
     private int offset;
     private Timer pausedTimer;
     private JMenuItem addUserMenuItem;
+    private AbstractButton loginUserMenuItem;
 
     public KakurasuView()
     {
@@ -84,7 +86,14 @@ public class KakurasuView extends JFrame
         newMenuItem.setActionCommand("New");
         newMenuItem.addActionListener(controller);
         fileMenu.add(newMenuItem);
-        addUserMenuItem = new JMenuItem("New User");
+        addUserMenuItem = new JMenuItem("Add User");
+        addUserMenuItem.setActionCommand("Add User");
+        addUserMenuItem.addActionListener(controller);
+        fileMenu.add(addUserMenuItem);
+        loginUserMenuItem = new JMenuItem("Login");
+        loginUserMenuItem.setActionCommand("Login");
+        loginUserMenuItem.addActionListener(controller);
+        fileMenu.add(loginUserMenuItem);
         fileMenu.addSeparator();
         exitMenuItem = new JMenuItem("Exit");
         exitMenuItem.setActionCommand("Exit");
