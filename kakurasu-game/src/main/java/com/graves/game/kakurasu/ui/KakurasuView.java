@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -25,6 +26,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JToggleButton;
 import javax.swing.Timer;
+import javax.swing.border.Border;
 
 import com.graves.game.kakurasu.lib.Board;
 import com.graves.game.kakurasu.lib.BoardLevelType;
@@ -173,8 +175,10 @@ public class KakurasuView extends JFrame
             }
             else if (i % (boardSize + 3) == boardSize + 1 && i / (boardSize + 3) <= boardSize)
             {
-                JLabel label = new JLabel("" + rowAnswers[(i / (boardSize + 3)) - 1],
-                        JLabel.CENTER);
+                int name = (i / (boardSize + 3)) - 1;
+                JLabel label = new JLabel("" + rowAnswers[name], JLabel.CENTER);
+                label.setName("R" + name);
+                label.addMouseListener(controller);
                 rowLabelList.add(label);
                 panel.add(label);
             }
@@ -191,8 +195,10 @@ public class KakurasuView extends JFrame
             }
             else if (i / (boardSize + 3) == boardSize + 1 && i % (boardSize + 3) <= boardSize)
             {
-                JLabel label = new JLabel("" + colAnswers[(i % (boardSize + 3)) - 1],
-                        JLabel.CENTER);
+                int name = (i % (boardSize + 3)) - 1;
+                JLabel label = new JLabel("" + colAnswers[name], JLabel.CENTER);
+                label.setName("C" + name);
+                label.addMouseListener(controller);
                 colLabelList.add(label);
                 panel.add(label);
             }
@@ -424,5 +430,31 @@ public class KakurasuView extends JFrame
     public void setUndoButtonEnabled(boolean isEnable)
     {
         undoButton.setEnabled(isEnable);
+    }
+
+    public void showHint(int value, String hintIndex)
+    {
+//        switch (hintIndex)
+//        {
+//        case "C0":
+//            for (int i = 0; i < 5; i++)
+//            {
+//                Border originalBorder = toggleButtonList.get(i).getBorder();
+//                toggleButtonList.get(i).setBorder(BorderFactory.createLineBorder(Color.RED));
+//                try
+//                {
+//                    TimeUnit.SECONDS.sleep(3);
+//                }
+//                catch (InterruptedException e)
+//                {
+//                    e.printStackTrace();
+//                }
+//                toggleButtonList.get(i).setBorder(originalBorder);
+//            }
+//            break;
+//
+//        default:
+//            break;
+//        }
     }
 }

@@ -48,9 +48,7 @@ public class KakurasuDataStore
             DriverManager.registerDriver(derbyEmbeddedDriver);
             conn = DriverManager.getConnection(DATABASE_URL, "karkurasu", "karkurasu1234");
             conn.setAutoCommit(false);
-            DatabaseMetaData dbm = conn.getMetaData();
-            ResultSet tables = dbm.getTables(null, null, "test", null);
-            if (!tables.next())
+            if (!tableExists(conn, USER_TABLE))
             {
                 Statement stmt = conn.createStatement();
                 stmt.execute(userTable);
@@ -181,5 +179,37 @@ public class KakurasuDataStore
                 System.err.println(ex.getMessage());
             }
         }
+    }
+
+    /**
+     * Derby doesn't support the standard SQL views. To see if a table exists you normally query the
+     * right view and see if any rows are returned (none if no such table, one if table exists).
+     * Derby does support a non-standard set of views which are complicated, but standard JDBC
+     * supports a DatabaseMetaData.getTables method. That returns a ResultSet but not one where you
+     * can easily count rows by "rs.last(); int numRows = rs.getRow()". Hence the loop.
+     * 
+     * @param con
+     * @param table
+     * @return
+     */
+    private static boolean tableExists(Connection con, String table)
+    {
+        int numRows = 0;
+        try
+        {
+            DatabaseMetaData dbmd = con.getMetaData();
+            ResultSet rs = dbmd.getTables(null, null, table.toUpperCase(), null);
+            while (rs.next())
+            {
+                ++numRows;
+            }
+        }
+        catch (SQLException e)
+        {
+            String theError = e.getSQLState();
+            System.out.println("Can't query DB metadata: " + theError);
+            System.exit(1);
+        }
+        return numRows > 0;
     }
 }

@@ -2,12 +2,15 @@ package com.graves.game.kakurasu.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Stack;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
@@ -21,7 +24,7 @@ import com.graves.game.kakurasu.lib.database.KakurasuDataStore;
 import com.graves.game.kakurasu.lib.database.PasswordEncryptionService;
 import com.graves.game.kakurasu.lib.database.User;
 
-public class KakurasuController implements ActionListener
+public class KakurasuController extends MouseAdapter implements ActionListener
 {
     private Board board;
     private KakurasuView view;
@@ -111,6 +114,10 @@ public class KakurasuController implements ActionListener
                 if (loginOption == JOptionPane.OK_OPTION)
                 {
                     User user = KakurasuDataStore.getUser(loginUsername.getText());
+                    if (user == null)
+                    {
+                        System.out.println("Can't find user " + loginUsername.getText());
+                    }
                     try
                     {
                         if (PasswordEncryptionService.authenticate(loginPassword.getText(),
@@ -208,4 +215,15 @@ public class KakurasuController implements ActionListener
         return this.board;
     }
 
+    @Override
+    public void mouseEntered(MouseEvent e)
+    {
+        Object source = e.getSource();
+
+        if (source instanceof JLabel)
+        {
+            JLabel label = (JLabel) source;
+            view.showHint(Integer.parseInt(label.getText()), label.getName());
+        }
+    }
 }
